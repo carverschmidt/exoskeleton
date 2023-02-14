@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := 14408-Lower-Body-Exoskeleton
+BUILD_ARTIFACT_NAME := EMG_Sensor_Test
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-14408-Lower-Body-Exoskeleton.elf \
+EMG_Sensor_Test.elf \
 
 MAP_FILES += \
-14408-Lower-Body-Exoskeleton.map \
+EMG_Sensor_Test.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-14408-Lower-Body-Exoskeleton.list \
+EMG_Sensor_Test.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: 14408-Lower-Body-Exoskeleton.elf secondary-outputs
+main-build: EMG_Sensor_Test.elf secondary-outputs
 
 # Tool invocations
-14408-Lower-Body-Exoskeleton.elf 14408-Lower-Body-Exoskeleton.map: $(OBJS) $(USER_OBJS) C:\Users\Chris\STM32CubeIDE\workspace_1.10.1\14408-Lower-Body-Exoskeleton\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "14408-Lower-Body-Exoskeleton.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Chris\STM32CubeIDE\workspace_1.10.1\14408-Lower-Body-Exoskeleton\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="14408-Lower-Body-Exoskeleton.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+EMG_Sensor_Test.elf EMG_Sensor_Test.map: $(OBJS) $(USER_OBJS) C:\Users\Chris\STM32CubeIDE\workspace_1.10.1\EMG_Sensor_Test\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "EMG_Sensor_Test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Chris\STM32CubeIDE\workspace_1.10.1\EMG_Sensor_Test\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="EMG_Sensor_Test.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-14408-Lower-Body-Exoskeleton.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "14408-Lower-Body-Exoskeleton.list"
+EMG_Sensor_Test.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "EMG_Sensor_Test.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) 14408-Lower-Body-Exoskeleton.elf 14408-Lower-Body-Exoskeleton.list 14408-Lower-Body-Exoskeleton.map default.size.stdout
+	-$(RM) EMG_Sensor_Test.elf EMG_Sensor_Test.list EMG_Sensor_Test.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
