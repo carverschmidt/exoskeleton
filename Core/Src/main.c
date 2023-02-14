@@ -31,6 +31,13 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define ENC1 0x20 //addresses for I2C encoder devices
+#define ENC2 0x21
+#define ENC3 0x22
+#define ENC4 0x23
+#define ENC5 0x24
+#define ENC6 0x25
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -93,10 +100,10 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  uint32_t emg[4];
-  uint8_t msg[100];
-  int msgSize;
-  int raw;
+  uint32_t emg[4];  //array for EMG values for DMA to store values in
+  uint8_t msg[100]; //buffer for UART message
+  int msgSize;		//variable for UART message size in bytes
+  uint8_t i2cMsg;	//8-bit value of I2C message
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -118,25 +125,18 @@ int main(void)
   MX_USART2_UART_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  //uint8_t buffer[100];
-  // uint16_t emg_vals[4];
-  //uint8_t	msg[8] ;
-  //HAL_UART_Init(&huart4);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	HAL_ADC_Start_DMA(&hadc1, emg, 4);
-	//HAL_ADC_Start(&hadc1);
-	//HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-	//raw = HAL_ADC_GetValue(&hadc1);
-	//HAL_DMA
-	msgSize = sprintf((char *)msg, "EMG1: %lu\tEMG2: %lu\tEMG3: %lu\tEMG4: %lu\r\n", emg[0],emg[1], emg[2],emg[3]);
-	HAL_UART_Transmit(&huart2, msg, msgSize, 20);
+	HAL_ADC_Start_DMA(&hadc1, emg, 4); //get DMA to update EMG values
+	msgSize = sprintf((char *)msg, "EMG1: %lu\tEMG2: %lu\tEMG3: %lu\tEMG4: %lu\r\n", emg[0],emg[1], emg[2],emg[3]); //store message in msg buffer
+	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 	HAL_Delay(1000);
+
+	HAL_I2C_Master_Transmit(&hi2c1, ENC1, i2cMsg, sizeof(i2cMsg), 10); //i2c messages
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
