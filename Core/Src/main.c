@@ -137,6 +137,7 @@ int main(void)
 	HAL_Delay(1000);
 
 	HAL_I2C_Master_Transmit(&hi2c1, ENC1, i2cMsg, sizeof(i2cMsg), 10); //i2c messages
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
