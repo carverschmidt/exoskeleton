@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "motorTimer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -104,6 +104,7 @@ int main(void)
   uint8_t msg[100]; //buffer for UART message
   int msgSize;		//variable for UART message size in bytes
   uint8_t i2cMsg;	//8-bit value of I2C message
+  uint8_t encPos[6]; //array for encoder positions
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -125,19 +126,34 @@ int main(void)
   MX_USART2_UART_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2); //Motor 1
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); //Motor 2
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2); //Motor 3
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3); //Motor 4
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Motor 5
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2); //Motor 6
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	/*
 	HAL_ADC_Start_DMA(&hadc1, emg, 4); //get DMA to update EMG values
 	msgSize = sprintf((char *)msg, "EMG1: %lu\tEMG2: %lu\tEMG3: %lu\tEMG4: %lu\r\n", emg[0],emg[1], emg[2],emg[3]); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 	HAL_Delay(1000);
+	*/
+	//HAL_I2C_Master_Transmit(&hi2c1, ENC1, i2cMsg, sizeof(i2cMsg), 10); //i2c messages
 
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1, i2cMsg, sizeof(i2cMsg), 10); //i2c messages
-
+	setMotorVel(1, 1, 10);
+	setMotorVel(2, 1, 20);
+	setMotorVel(3, 1, 30);
+	setMotorVel(4, 1, 40);
+	setMotorVel(5, 1, 50);
+	setMotorVel(6, 1, 60);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -326,7 +342,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 65535;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
@@ -533,10 +549,6 @@ static void MX_TIM8_Init(void)
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  if (HAL_TIM_PWM_ConfigChannel(&htim8, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
   if (HAL_TIM_PWM_ConfigChannel(&htim8, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
@@ -656,10 +668,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|M2DIR_Pin|M1DIR_Pin|M4DIR_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(M3DIR_GPIO_Port, M3DIR_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -667,25 +679,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD2_Pin PA8 PA9 PA10 */
-  GPIO_InitStruct.Pin = LD2_Pin|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10;
+  /*Configure GPIO pins : LD2_Pin M2DIR_Pin M1DIR_Pin M4DIR_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin|M2DIR_Pin|M1DIR_Pin|M4DIR_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  /*Configure GPIO pin : M3DIR_Pin */
+  GPIO_InitStruct.Pin = M3DIR_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(M3DIR_GPIO_Port, &GPIO_InitStruct);
 
 }
 

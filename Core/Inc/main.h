@@ -63,6 +63,26 @@ void Error_Handler(void);
 #define B1_GPIO_Port GPIOC
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+#define M1PWM_Pin GPIO_PIN_7
+#define M1PWM_GPIO_Port GPIOA
+#define M4PWM_Pin GPIO_PIN_10
+#define M4PWM_GPIO_Port GPIOB
+#define M3PWM_Pin GPIO_PIN_7
+#define M3PWM_GPIO_Port GPIOC
+#define M2DIR_Pin GPIO_PIN_8
+#define M2DIR_GPIO_Port GPIOA
+#define M1DIR_Pin GPIO_PIN_9
+#define M1DIR_GPIO_Port GPIOA
+#define M4DIR_Pin GPIO_PIN_10
+#define M4DIR_GPIO_Port GPIOA
+#define M6PWM_Pin GPIO_PIN_3
+#define M6PWM_GPIO_Port GPIOB
+#define M5PWM_Pin GPIO_PIN_4
+#define M5PWM_GPIO_Port GPIOB
+#define M3DIR_Pin GPIO_PIN_5
+#define M3DIR_GPIO_Port GPIOB
+#define M2PWM_Pin GPIO_PIN_6
+#define M2PWM_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

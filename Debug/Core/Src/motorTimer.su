@@ -1,0 +1,2 @@
+../Core/Src/motorTimer.c:29:6:setMotorVel	32	static
+../Core/Src/motorTimer.c:74:5:getMotorVel	16	static
