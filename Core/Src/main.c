@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "motorTimer.h"
+#include "motor_encoder.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,12 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define ENC1 0x20 //addresses for I2C encoder devices
-#define ENC2 0x21
-#define ENC3 0x22
-#define ENC4 0x23
-#define ENC5 0x24
-#define ENC6 0x25
+
 
 /* USER CODE END PD */
 
@@ -49,7 +45,7 @@
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
-I2C_HandleTypeDef hi2c1;
+extern I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
@@ -103,7 +99,7 @@ int main(void)
   uint32_t emg[4];  //array for EMG values for DMA to store values in
   uint8_t msg[100]; //buffer for UART message
   int msgSize;		//variable for UART message size in bytes
-  uint8_t i2cMsg;	//8-bit value of I2C message
+  uint8_t * i2cMsg;	//8-bit value of I2C message
   uint8_t encPos[6]; //array for encoder positions
   /* USER CODE END Init */
 
@@ -146,17 +142,23 @@ int main(void)
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 	HAL_Delay(1000);
 	*/
-	//HAL_I2C_Master_Transmit(&hi2c1, ENC1, i2cMsg, sizeof(i2cMsg), 10); //i2c messages
-
+	/*
 	setMotorVel(1, 1, 10);
 	setMotorVel(2, 1, 20);
 	setMotorVel(3, 1, 30);
 	setMotorVel(4, 1, 40);
 	setMotorVel(5, 1, 50);
 	setMotorVel(6, 1, 60);
+	*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	//i2cMsg = 5;
+	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t *)(0xFF), 1, 10);
+	//encPos[0] = HAL_I2C_Master_Receive(&hi2c1, ENC1ADD, (uint8_t *)i2cMsg, sizeof(i2cMsg), 10); //i2c messages
+	msgSize = sprintf((char *)msg, "Pos: %d\r\n", encPos[0]); //store message in msg buffer
+	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+
   }
   /* USER CODE END 3 */
 }
