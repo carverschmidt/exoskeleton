@@ -1,3 +1,4 @@
+"./Core/Src/control.o"
 "./Core/Src/main.o"
 "./Core/Src/motorTimer.o"
 "./Core/Src/motor_encoder.o"

@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020070  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0001296b  00000000  00000000  000200a0  2**0
+ 12 .debug_info   00012c5a  00000000  00000000  000200a0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 0000248f  00000000  00000000  00032a0b  2**0
+ 13 .debug_abbrev 000024b8  00000000  00000000  00032cfa  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000010a8  00000000  00000000  00034ea0  2**3
+ 14 .debug_aranges 000010b0  00000000  00000000  000351b8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000fd8  00000000  00000000  00035f48  2**3
+ 15 .debug_ranges 00000fe0  00000000  00000000  00036268  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00024335  00000000  00000000  00036f20  2**0
+ 16 .debug_macro  000238bd  00000000  00000000  00037248  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00015646  00000000  00000000  0005b255  2**0
+ 17 .debug_line   000156f9  00000000  00000000  0005ab05  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000e0303  00000000  00000000  0007089b  2**0
+ 18 .debug_str    000e0315  00000000  00000000  000701fe  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  00150b9e  2**0
+ 19 .comment      00000050  00000000  00000000  00150513  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00004b54  00000000  00000000  00150bf0  2**2
+ 20 .debug_frame  00004b7c  00000000  00000000  00150564  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -494,10 +494,10 @@ int main(void)
  800061e:	2104      	movs	r1, #4
  8000620:	481f      	ldr	r0, [pc, #124]	; (80006a0 <main+0xec>)
  8000622:	f003 fccd 	bl	8003fc0 <HAL_TIM_PWM_Start>
+		setMotorVel(1, 1, (i));
+		HAL_Delay(10);
 	}
-	HAL_Delay(3000);
 	*/
-
 
 	if (MCP23008_Read8(MCP_GPIO, &buf)){
  8000626:	1cfb      	adds	r3, r7, #3
@@ -2096,7 +2096,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
  8000f62:	681b      	ldr	r3, [r3, #0]
  8000f64:	4a3c      	ldr	r2, [pc, #240]	; (8001058 <HAL_ADC_MspInit+0x110>)
  8000f66:	4293      	cmp	r3, r2
- 8000f68:	d171      	bne.n	800104e <HAL_ADC_MspInit+0x106>
+ 8000f68:	d172      	bne.n	8001050 <HAL_ADC_MspInit+0x108>
   {
   /* USER CODE BEGIN ADC1_MspInit 0 */
 
@@ -2211,43 +2211,42 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
  800101e:	4b12      	ldr	r3, [pc, #72]	; (8001068 <HAL_ADC_MspInit+0x120>)
  8001020:	f44f 7280 	mov.w	r2, #256	; 0x100
  8001024:	61da      	str	r2, [r3, #28]
-    hdma_adc1.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_adc1.Init.Priority = DMA_PRIORITY_VERY_HIGH;
  8001026:	4b10      	ldr	r3, [pc, #64]	; (8001068 <HAL_ADC_MspInit+0x120>)
- 8001028:	2200      	movs	r2, #0
- 800102a:	621a      	str	r2, [r3, #32]
+ 8001028:	f44f 3240 	mov.w	r2, #196608	; 0x30000
+ 800102c:	621a      	str	r2, [r3, #32]
     hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
- 800102c:	4b0e      	ldr	r3, [pc, #56]	; (8001068 <HAL_ADC_MspInit+0x120>)
- 800102e:	2200      	movs	r2, #0
- 8001030:	625a      	str	r2, [r3, #36]	; 0x24
+ 800102e:	4b0e      	ldr	r3, [pc, #56]	; (8001068 <HAL_ADC_MspInit+0x120>)
+ 8001030:	2200      	movs	r2, #0
+ 8001032:	625a      	str	r2, [r3, #36]	; 0x24
     if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
- 8001032:	480d      	ldr	r0, [pc, #52]	; (8001068 <HAL_ADC_MspInit+0x120>)
- 8001034:	f000 feb8 	bl	8001da8 <HAL_DMA_Init>
- 8001038:	4603      	mov	r3, r0
- 800103a:	2b00      	cmp	r3, #0
- 800103c:	d001      	beq.n	8001042 <HAL_ADC_MspInit+0xfa>
+ 8001034:	480c      	ldr	r0, [pc, #48]	; (8001068 <HAL_ADC_MspInit+0x120>)
+ 8001036:	f000 feb7 	bl	8001da8 <HAL_DMA_Init>
+ 800103a:	4603      	mov	r3, r0
+ 800103c:	2b00      	cmp	r3, #0
+ 800103e:	d001      	beq.n	8001044 <HAL_ADC_MspInit+0xfc>
     {
       Error_Handler();
- 800103e:	f7ff ff35 	bl	8000eac <Error_Handler>
+ 8001040:	f7ff ff34 	bl	8000eac <Error_Handler>
     }
 
     __HAL_LINKDMA(hadc,DMA_Handle,hdma_adc1);
- 8001042:	687b      	ldr	r3, [r7, #4]
- 8001044:	4a08      	ldr	r2, [pc, #32]	; (8001068 <HAL_ADC_MspInit+0x120>)
- 8001046:	639a      	str	r2, [r3, #56]	; 0x38
- 8001048:	4a07      	ldr	r2, [pc, #28]	; (8001068 <HAL_ADC_MspInit+0x120>)
- 800104a:	687b      	ldr	r3, [r7, #4]
- 800104c:	6393      	str	r3, [r2, #56]	; 0x38
+ 8001044:	687b      	ldr	r3, [r7, #4]
+ 8001046:	4a08      	ldr	r2, [pc, #32]	; (8001068 <HAL_ADC_MspInit+0x120>)
+ 8001048:	639a      	str	r2, [r3, #56]	; 0x38
+ 800104a:	4a07      	ldr	r2, [pc, #28]	; (8001068 <HAL_ADC_MspInit+0x120>)
+ 800104c:	687b      	ldr	r3, [r7, #4]
+ 800104e:	6393      	str	r3, [r2, #56]	; 0x38
   /* USER CODE BEGIN ADC1_MspInit 1 */
 
   /* USER CODE END ADC1_MspInit 1 */
   }
 
 }
- 800104e:	bf00      	nop
- 8001050:	3728      	adds	r7, #40	; 0x28
- 8001052:	46bd      	mov	sp, r7
- 8001054:	bd80      	pop	{r7, pc}
- 8001056:	bf00      	nop
+ 8001050:	bf00      	nop
+ 8001052:	3728      	adds	r7, #40	; 0x28
+ 8001054:	46bd      	mov	sp, r7
+ 8001056:	bd80      	pop	{r7, pc}
  8001058:	40012000 	.word	0x40012000
  800105c:	40023800 	.word	0x40023800
  8001060:	40020000 	.word	0x40020000

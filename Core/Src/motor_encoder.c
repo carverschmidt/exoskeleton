@@ -9,6 +9,7 @@
 #include "main.h"
 
 extern I2C_HandleTypeDef hi2c1;
+extern UART_HandleTypeDef huart2;
 
 const uint8_t encoderMap_87654321[256] = {
   0xFF,0x48,0x58,0x57,0x68,0xFF,0x67,0x64,0x78,0x79,0xFF,0xFF,0x77,0xFF,0x74,0x4D,
@@ -56,58 +57,62 @@ uint8_t motor_enc_read(void)
 
 uint8_t MCP23008_ReadRegs(void)
 {
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_IODIR, 1, &val, 1, 10) != HAL_OK)
+	uint8_t buf;
+	uint8_t msg[100]; //buffer for UART message
+	int msgSize;		//variable for UART message size in bytes
+
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_IODIR, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "IODIR: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_IPOL, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_IPOL, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "IPOL: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_GPINTEN, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_GPINTEN, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "GPINTEN: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_DEFVAL, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_DEFVAL, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "DEFVAL: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_INTCON, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_INTCON, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "INTCON: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_GPPU, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_GPPU, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
-		msgSize = sprintf((char *)msg, "GPPU: %u\r\n", buf); //store message in msg buffer
-		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	msgSize = sprintf((char *)msg, "GPPU: %u\r\n", buf); //store message in msg buffer
+	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_INTF, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_INTF, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "INTF: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_INTCAP, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_INTCAP, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "INTCAP: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_GPIO, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_GPIO, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "GPIO: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), MCP_OLAT, 1, &val, 1, 10) != HAL_OK)
+	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_OLAT, 1, &buf, 1, 10) != HAL_OK)
 		return 1;
 	msgSize = sprintf((char *)msg, "OLAT: %u\r\n", buf); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 	return 0;
 }
-/*
+/* Function to write to MCP23008 register
  * Param: reg: register of MCP23008 to write to
  * 		  val: value to write to register
  * Return: 0 if write successful
@@ -121,6 +126,7 @@ uint8_t MCP23008_Write8(uint8_t reg, uint8_t val)
 }
 
 /*
+ * Function to read from MCP23008 register
  * Param: reg: register of MCP23008 to read from
  * 		  val: value to store register value in
  * Return: 0 if write successful

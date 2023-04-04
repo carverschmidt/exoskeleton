@@ -35,5 +35,6 @@
 //uint8_t motor_enc_read(void);
 uint8_t MCP23008_Write8(uint8_t reg, uint8_t val);
 uint8_t MCP23008_Read8(uint8_t reg, uint8_t *val);
+uint8_t MCP23008_ReadRegs(void);
 
 #endif /* INC_MOTOR_ENCODER_H_ */

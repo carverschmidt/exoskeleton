@@ -152,29 +152,6 @@ int main(void)
 		HAL_Delay(10);
 	}
 	*/
-	/*
-	buf[0] = MCP_IODIR;
-	buf[1] = 0b00000111;
-	ret = HAL_I2C_Master_Transmit(&hi2c1, (ENC1ADD << 1), buf, 2, HAL_MAX_DELAY);
-
-	if ( ret != HAL_OK ) {
-		msgSize = sprintf((char *)msg, "No encoder found\r\n"); //store message in msg buffer
-		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-	} else{
-		msgSize = sprintf((char *)msg, "We livin\r\n"); //store message in msg buffer
-		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-	}
-	ret = HAL_I2C_Master_Receive(&hi2c1, (ENC1ADD << 1), buf, 1, HAL_MAX_DELAY);
-	if ( ret != HAL_OK ) {
-		msgSize = sprintf((char *)msg, "Read failed\r\n"); //store message in msg buffer
-		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-	} else{
-		msgSize = sprintf((char *)msg, "%d\r\n", buf[0]); //store message in msg buffer
-		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-	}
-	HAL_Delay(3000);
-	*/
-
 
 	if (MCP23008_Read8(MCP_GPIO, &buf)){
 		msgSize = sprintf((char *)msg, "No encoder found\r\n"); //store message in msg buffer
