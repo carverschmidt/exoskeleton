@@ -10,7 +10,7 @@
 
 #include "stm32f4xx_hal.h"
 
-#define COUNTARR 65535
+#define COUNTARR 20000
 
 #define M1PWMTIM TIM3
 #define M1PWMCH CCR2
@@ -31,7 +31,7 @@
 #define M6PWMCH CCR2
 
 
-void setMotorVel(int motor, _Bool dir, int speed);
+void setMotorVel(int motor, _Bool dir, float speed);
 int getMotorVel(int motor);
 
 

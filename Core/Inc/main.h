@@ -31,6 +31,9 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "motorTimer.h"
+#include "motor_encoder.h"
+#include <stdio.h>
 
 /* USER CODE END Includes */
 

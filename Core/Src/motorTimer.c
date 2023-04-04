@@ -26,7 +26,7 @@
  *
  *
  */
-void setMotorVel(int motor, _Bool dir, int speed)
+void setMotorVel(int motor, _Bool dir, float speed)
 {
 	float arr = COUNTARR;
 	int vel = (float)speed/100 * arr;

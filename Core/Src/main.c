@@ -21,8 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "motorTimer.h"
-#include "motor_encoder.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +44,7 @@
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
-extern I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
@@ -101,6 +100,10 @@ int main(void)
   int msgSize;		//variable for UART message size in bytes
   uint8_t * i2cMsg;	//8-bit value of I2C message
   uint8_t encPos[6]; //array for encoder positions
+  uint8_t buf;
+  uint8_t old_buf = 0x00;
+  uint8_t val = 0x00;
+  extern const uint8_t encoderMap_87654321[256];
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -129,7 +132,8 @@ int main(void)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); //Motor 5
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2); //Motor 6
 
-
+  //MCP23008_Write8(MCP_IODIR, 0xFF); //configure all pins as outputs
+  //MCP23008_Write8(MCP_GPPU, 0xFF); //configure all pins with pullups
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -141,24 +145,99 @@ int main(void)
 	msgSize = sprintf((char *)msg, "EMG1: %lu\tEMG2: %lu\tEMG3: %lu\tEMG4: %lu\r\n", emg[0],emg[1], emg[2],emg[3]); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 	HAL_Delay(1000);
+
+	for(int i = 5; i < 8; i++)
+	{
+		setMotorVel(1, 1, (i));
+		HAL_Delay(10);
+	}
 	*/
 	/*
-	setMotorVel(1, 1, 10);
-	setMotorVel(2, 1, 20);
-	setMotorVel(3, 1, 30);
-	setMotorVel(4, 1, 40);
-	setMotorVel(5, 1, 50);
-	setMotorVel(6, 1, 60);
+	buf[0] = MCP_IODIR;
+	buf[1] = 0b00000111;
+	ret = HAL_I2C_Master_Transmit(&hi2c1, (ENC1ADD << 1), buf, 2, HAL_MAX_DELAY);
+
+	if ( ret != HAL_OK ) {
+		msgSize = sprintf((char *)msg, "No encoder found\r\n"); //store message in msg buffer
+		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	} else{
+		msgSize = sprintf((char *)msg, "We livin\r\n"); //store message in msg buffer
+		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	}
+	ret = HAL_I2C_Master_Receive(&hi2c1, (ENC1ADD << 1), buf, 1, HAL_MAX_DELAY);
+	if ( ret != HAL_OK ) {
+		msgSize = sprintf((char *)msg, "Read failed\r\n"); //store message in msg buffer
+		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	} else{
+		msgSize = sprintf((char *)msg, "%d\r\n", buf[0]); //store message in msg buffer
+		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	}
+	HAL_Delay(3000);
 	*/
+
+
+	if (MCP23008_Read8(MCP_GPIO, &buf)){
+		msgSize = sprintf((char *)msg, "No encoder found\r\n"); //store message in msg buffer
+		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	} else{
+		if(old_buf != buf)
+		{
+			msgSize = sprintf((char *)msg, "We livin: %u\r\n", buf); //store message in msg buffer
+			HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+			old_buf = buf;
+		}
+
+	}
+	//HAL_Delay(1000);
+
+	/*
+	setMotorVel(1, 1, 7.5);
+	HAL_Delay(1000);
+
+	setMotorVel(1, 1, 7.75);
+	HAL_Delay(1000);
+
+	setMotorVel(1, 1, 7.5);
+	HAL_Delay(1000);
+
+	setMotorVel(1, 1, 7.75);
+	HAL_Delay(1000);
+	/*
+	for(int i = 8; i > 0; i--)
+	{
+		setMotorVel(1, 1, (i));
+		HAL_Delay(10);
+	}
+
+	HAL_Delay(1000);
+
+	for(int i = 0; i < 75; i++)
+	{
+		setMotorVel(1, 0, (i));
+		HAL_Delay(10);
+	}
+
+	HAL_Delay(5000);
+
+	for(int i = 75; i > 0; i--)
+	{
+		setMotorVel(1, 0, (i));
+		HAL_Delay(10);
+	}
+
+	HAL_Delay(1000);
+	*/
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	/*
 	//i2cMsg = 5;
 	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t *)(0xFF), 1, 10);
 	//encPos[0] = HAL_I2C_Master_Receive(&hi2c1, ENC1ADD, (uint8_t *)i2cMsg, sizeof(i2cMsg), 10); //i2c messages
 	msgSize = sprintf((char *)msg, "Pos: %d\r\n", encPos[0]); //store message in msg buffer
 	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
+	*/
   }
   /* USER CODE END 3 */
 }
@@ -396,9 +475,9 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
+  htim3.Init.Prescaler = 83;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 65535;
+  htim3.Init.Period = 19975;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)

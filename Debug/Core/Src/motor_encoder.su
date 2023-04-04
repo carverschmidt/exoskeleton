@@ -1,1 +1,2 @@
-../Core/Src/motor_encoder.c:13:6:motor_enc_set_up	16	static
+../Core/Src/motor_encoder.c:62:9:MCP23008_Write8	32	static
+../Core/Src/motor_encoder.c:75:9:MCP23008_Read8	32	static
