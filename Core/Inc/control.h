@@ -12,5 +12,6 @@ void control_init();
 
 void control_run();
 
+void balance();
 
 #endif /* INC_CONTROL_H_ */

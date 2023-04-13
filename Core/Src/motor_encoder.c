@@ -35,8 +35,10 @@ const uint8_t encoderMap_87654321[256] = {
 uint8_t enc_read_pos(uint8_t enc_num)
 {
 	uint8_t buf;
+	uint8_t raw;
 	HAL_I2C_Master_Transmit(&hi2c1, (ENC1ADD + (enc_num - 1)) << 1, NULL, 0, HAL_MAX_DELAY);
 	// Read data from the PCF8574
 	HAL_I2C_Master_Receive(&hi2c1, (ENC1ADD + (enc_num - 1)) << 1, &buf, 1, HAL_MAX_DELAY);
-	return encoderMap_87654321[buf];
+	raw = encoderMap_87654321[buf] - 71;
+	return raw % 128 ;
 }

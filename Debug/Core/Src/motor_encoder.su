@@ -1,3 +1,1 @@
-../Core/Src/motor_encoder.c:58:9:MCP23008_ReadRegs	136	static
-../Core/Src/motor_encoder.c:121:9:MCP23008_Write8	32	static
-../Core/Src/motor_encoder.c:134:9:MCP23008_Read8	32	static
+../Core/Src/motor_encoder.c:35:9:enc_read_pos	32	static
