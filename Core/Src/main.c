@@ -137,6 +137,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  control_run();
   while (1)
   {
 	/*
