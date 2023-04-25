@@ -12,5 +12,8 @@ void control_init();
 
 void control_run();
 
+void balance(uint8_t encPos, uint8_t threshLow, uint8_t threshHigh, int motor);
+
+int check_balanced();
 
 #endif /* INC_CONTROL_H_ */

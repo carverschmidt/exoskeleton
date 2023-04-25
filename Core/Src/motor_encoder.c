@@ -30,111 +30,15 @@ const uint8_t encoderMap_87654321[256] = {
   0x0D,0x22,0x0C,0x21,0x0E,0x0F,0xFF,0x30,0x12,0x11,0x7F,0x20,0x01,0x10,0x00,0xFF };
 
 /*
-void motor_enc_set_up(void)
-{
-	//start up sequence of MCP23008
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0xFF, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0xFF, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-	HAL_I2C_Master_Transmit(&hi2c1, ENC1ADD, (uint8_t)0x00, 1, 10); //i2c messages
-}
-
-void motor_enc_set_up(void)
-//read message from i2c device
-uint8_t motor_enc_read(void)
-{
-	HAL_I2C_Master_Receive(&hi2c1, ENC1ADD, (uint8_t *)i2cMsg, 1, 10);
-}
-&*/
-
-uint8_t MCP23008_ReadRegs(void)
+ * Read position of the encoder
+ */
+uint8_t enc_read_pos(uint8_t enc_num)
 {
 	uint8_t buf;
-	uint8_t msg[100]; //buffer for UART message
-	int msgSize;		//variable for UART message size in bytes
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_IODIR, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "IODIR: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_IPOL, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "IPOL: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_GPINTEN, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "GPINTEN: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_DEFVAL, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "DEFVAL: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_INTCON, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "INTCON: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_GPPU, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "GPPU: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_INTF, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "INTF: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_INTCAP, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "INTCAP: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_GPIO, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "GPIO: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), MCP_OLAT, 1, &buf, 1, 10) != HAL_OK)
-		return 1;
-	msgSize = sprintf((char *)msg, "OLAT: %u\r\n", buf); //store message in msg buffer
-	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-	return 0;
-}
-/* Function to write to MCP23008 register
- * Param: reg: register of MCP23008 to write to
- * 		  val: value to write to register
- * Return: 0 if write successful
- * 		   1 if write fails
- */
-uint8_t MCP23008_Write8(uint8_t reg, uint8_t val)
-{
-	if(HAL_I2C_Mem_Write(&hi2c1, (ENC1ADD << 1), reg, 1, &val, 1, 10) != HAL_OK)
-		return 1;
-	return 0;
-}
-
-/*
- * Function to read from MCP23008 register
- * Param: reg: register of MCP23008 to read from
- * 		  val: value to store register value in
- * Return: 0 if write successful
- * 		   1 if write fails
- */
-uint8_t MCP23008_Read8(uint8_t reg, uint8_t * val)
-{
-	if(HAL_I2C_Mem_Read(&hi2c1, (ENC1ADD << 1), reg, 1, val, 1, 10) != HAL_OK)
-		return 1;
-	return 0;
+	uint8_t raw;
+	HAL_I2C_Master_Transmit(&hi2c1, (ENC1ADD + (enc_num - 1)) << 1, NULL, 0, HAL_MAX_DELAY);
+	// Read data from the PCF8574
+	HAL_I2C_Master_Receive(&hi2c1, (ENC1ADD + (enc_num - 1)) << 1, &buf, 1, HAL_MAX_DELAY);
+	raw = encoderMap_87654321[buf] - 71;
+	return raw % 128 ;
 }

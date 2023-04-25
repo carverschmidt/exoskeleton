@@ -95,15 +95,14 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  uint32_t emg[4];  //array for EMG values for DMA to store values in
+
   uint8_t msg[100]; //buffer for UART message
   int msgSize;		//variable for UART message size in bytes
   uint8_t * i2cMsg;	//8-bit value of I2C message
-  uint8_t encPos[6]; //array for encoder positions
   uint8_t buf;
-  uint8_t old_buf = 0x00;
   uint8_t val = 0x00;
-  extern const uint8_t encoderMap_87654321[256];
+  uint8_t test = 0;
+  //extern con
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -138,6 +137,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  control_run();
   while (1)
   {
 	/*
@@ -152,20 +152,9 @@ int main(void)
 		HAL_Delay(10);
 	}
 	*/
-
-	if (MCP23008_Read8(MCP_GPIO, &buf)){
-		msgSize = sprintf((char *)msg, "No encoder found\r\n"); //store message in msg buffer
-		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-	} else{
-		if(old_buf != buf)
-		{
-			msgSize = sprintf((char *)msg, "We livin: %u\r\n", buf); //store message in msg buffer
-			HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
-			old_buf = buf;
-		}
-
-	}
-	//HAL_Delay(1000);
+	msgSize = sprintf((char *)msg, "We livin: %u\r\n", enc_read_pos(1)); //store message in msg buffer
+	HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	HAL_Delay(1000);
 
 	/*
 	setMotorVel(1, 1, 7.5);
@@ -719,6 +708,8 @@ static void MX_DMA_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -751,6 +742,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(M3DIR_GPIO_Port, &GPIO_InitStruct);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
