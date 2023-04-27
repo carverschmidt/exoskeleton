@@ -33,6 +33,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include "motorTimer.h"
 #include "motor_encoder.h"
+#include "control.h"
 #include <stdio.h>
 
 /* USER CODE END Includes */

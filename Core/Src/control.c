@@ -23,26 +23,33 @@ void control_init()
 //script for running two joints
 void control_run()
 {
+	/*
 	uint32_t tib_an_l = 0; //left tib
 	uint32_t vas_lat_l = 0; //left vas
 
 	uint32_t tib_an_r = 0; //right tib
 	uint32_t vas_lat_r = 0; //right vas
+	*/
 
 	uint8_t encPos[6]; //array for encoder positions
-	uint8_t encStartPos[] = {80, 0, 0, 0, 0, 0}; //array for encoder positions
+	//uint8_t encStartPos[] = {80, 0, 0, 0, 0, 0}; //array for encoder positions
+	//uint8_t encStandPos[] = {80, 0, 0, 0, 0, 0}; //array for encoder positions
+	uint8_t enc_start_pos[] = {80, 0}; //array for encoder positions. MOTOR 1 IS RIGHT KNEE, MOTOR 2 IS RIGHT HIP
+	uint8_t enc_stand_pos[] = {80, 0}; //array for encoder positions.
+	uint8_t enc_final_pos[] = {80, 0}; //array for encoder positions
+	uint8_t pos_step[] = {0, 0};
 	uint32_t emg[4];  //array for EMG values for DMA to store values in
 
 	uint8_t msg[100]; //buffer for UART message
+	uint8_t num_steps = 5;
 	int msgSize;		//variable for UART message size in bytes
 
 	HAL_ADC_Start_DMA(&hadc1, emg, 4); //start DMA to update EMG values
 
 	//move motors to initial conditions
-	/*
-	for(int i = 0; i < 6; i ++){
-		encPos[i] = enc_read_pos(i);
-		balance(encPos[i], encStartPos[i]-1, encStartPos[i]+1, i);
+	for(int i = 0; i < 2; i ++){
+		encPos[i] = enc_read_pos(i+1);
+		balance(encPos[i], enc_start_pos[i]-3, enc_start_pos[i]+3, i + 1);
 
 		//if all motors are balanced, break
 		if(check_balanced())
@@ -50,8 +57,8 @@ void control_run()
 			break;
 		}
 	}
-	*/
 
+	/*
 	while(!motor_balanced[0])
 	{
 		encPos[0] = enc_read_pos(1); //read 1st joint
@@ -60,7 +67,6 @@ void control_run()
 		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 		HAL_Delay(10);
 	}
-	/*
 	while(tib_an < 5325)//betwenn 1.5V to 5V
 	{
 		//take in EMG data for tib_an
@@ -77,6 +83,7 @@ void control_run()
 	}
 	*/
 
+	//right calves
 	while(emg[0] < 2100)
 	{
 		HAL_ADC_Start_DMA(&hadc1, emg, 4); //get DMA to update EMG values
@@ -85,17 +92,75 @@ void control_run()
 		HAL_Delay(100);
 	}
 
+	//calculate angle to move by given a number of steps
+	for(int i = 0; i < 2; i ++){
+		if(enc_stand_pos[i] != enc_start_pos[i])
+		{
+			pos_step[i] = (enc_stand_pos[i] - enc_start_pos[i])/num_steps;
+		}
+	}
+
+	//move to standing position in steps
+	for(int steps = 1; steps <= num_steps; steps++)
+	{
+		do{
+			for(int i = 0; i < 2; i ++){
+				encPos[i] = enc_read_pos(i+1);
+				balance(encPos[i], (enc_start_pos[i] + pos_step[i] * steps) - 2, (enc_start_pos[i] + pos_step[i] * steps) + 2, i + 1);
+
+				//if all motors are balanced, break
+				if(check_balanced())
+				{
+					break;
+				}
+			}
+		}while(!check_balanced());
+		HAL_Delay(10);
+	}
+	//rotate motor to move
+
+
+	//right quads
+	while(emg[1] < 2100 && emg[2] < 2100)
+	{
+		HAL_ADC_Start_DMA(&hadc1, emg, 4); //get DMA to update EMG values
+		msgSize = sprintf((char *)msg, "ADC: %u\r\n", emg[0]); //store message in msg buffer
+		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+		HAL_Delay(100);
+	}
+
+	//calculate angle to move by given a number of steps
+	for(int i = 0; i < 2; i ++){
+		if(enc_stand_pos[i] != enc_start_pos[i])
+		{
+			pos_step[i] = (enc_final_pos[i] - enc_stand_pos[i])/num_steps;
+		}
+	}
+
+	//move to standing position in steps
+	for(int steps = 1; steps <= num_steps; steps++)
+	{
+		do{
+			for(int i = 0; i < 2; i ++){
+				encPos[i] = enc_read_pos(i+1);
+				balance(encPos[i], (enc_stand_pos[i] + pos_step[i] * steps) - 2, (enc_stand_pos[i] + pos_step[i] * steps) + 2, i + 1);
+
+				//if all motors are balanced, break
+				if(check_balanced())
+				{
+					break;
+				}
+			}
+		}while(!check_balanced());
+		HAL_Delay(10);
+	}
 
 	while(1)//stability loop, goes forever
 	{
-		/*
-		for(int i = 0; i < 6; i ++){
-			encPos[i] = enc_read_pos(i);
-			balance(encPos[i], 47, 53, i + 1);
+		for(int i = 0; i < 2; i ++){
+			encPos[i] = enc_read_pos(i+1);
+			balance(encPos[i], enc_final_pos[i] - 2, enc_final_pos[i] + 2, i + 1);
 		}
-		*/
-		encPos[0] = enc_read_pos(1); //read 1st joint
-		balance(encPos[0], 25, 35, 1);
 		msgSize = sprintf((char *)msg, "Encoder balancing: %u\r\n", encPos[0]); //store message in msg buffer
 		HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
 		HAL_Delay(10);
@@ -113,7 +178,7 @@ void balance(uint8_t encPos, uint8_t threshLow, uint8_t threshHigh, int motor)
 	{
 		if(encPos < threshLow)
 		{
-			setMotorVel(motor, 1, 6.75);//move forward slowly
+			setMotorVel(motor, 1, 7);//move forward slowly
 			motor_balanced[motor - 1] = 0;
 		}
 		else

@@ -1,4 +1,4 @@
 control.c:19:6:control_init	1
-control.c:23:6:control_run	2
-control.c:104:6:balance	3
-control.c:129:5:check_balanced	3
+control.c:24:6:control_run	19
+control.c:169:6:balance	3
+control.c:194:5:check_balanced	3
