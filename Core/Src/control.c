@@ -20,6 +20,7 @@ void control_init()
 {
 }
 
+//script for running two joints
 void control_run()
 {
 	uint32_t tib_an_l = 0; //left tib

@@ -9,8 +9,8 @@
 #ifndef INC_MOTOR_ENCODER_H_
 #define INC_MOTOR_ENCODER_H_
 
-#define ENC1ADD 0x20 //addresses for I2C encoder devices
-#define ENC2ADD 0x21
+#define ENC1ADD 0x20 //one we are testing
+#define ENC2ADD 0x21 //knee joint
 #define ENC3ADD 0x22
 #define ENC4ADD 0x23
 #define ENC5ADD 0x24
