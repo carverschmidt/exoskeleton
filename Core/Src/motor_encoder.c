@@ -10,7 +10,7 @@
 
 extern I2C_HandleTypeDef hi2c1;
 extern UART_HandleTypeDef huart2;
-
+uint8_t enc_cal[] = {71, -112, 0, 0, 0, 0};
 const uint8_t encoderMap_87654321[256] = {
   0xFF,0x48,0x58,0x57,0x68,0xFF,0x67,0x64,0x78,0x79,0xFF,0xFF,0x77,0xFF,0x74,0x4D,
   0x08,0xFF,0x09,0xFF,0xFF,0xFF,0xFF,0x63,0x07,0x06,0xFF,0xFF,0x04,0x05,0x5D,0x62,
@@ -39,6 +39,6 @@ uint8_t enc_read_pos(uint8_t enc_num)
 	HAL_I2C_Master_Transmit(&hi2c1, (ENC1ADD + (enc_num - 1)) << 1, NULL, 0, HAL_MAX_DELAY);
 	// Read data from the PCF8574
 	HAL_I2C_Master_Receive(&hi2c1, (ENC1ADD + (enc_num - 1)) << 1, &buf, 1, HAL_MAX_DELAY);
-	raw = encoderMap_87654321[buf] - 71;
+	raw = encoderMap_87654321[buf] - enc_cal[enc_num-1];
 	return raw % 128 ;
 }

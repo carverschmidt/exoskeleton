@@ -137,6 +137,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  /*
+  uint8_t encPos[6];
+  while (1)
+  {
+	  encPos[0] = enc_read_pos(1); //read 1st joint
+	  encPos[1] = enc_read_pos(2); //read 2nd joint
+	  msgSize = sprintf((char *)msg, "Encoder 1 start: %u\r\n", encPos[0]); //store message in msg buffer
+	  HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	  msgSize = sprintf((char *)msg, "Encoder 2 start: %u\r\n", encPos[1]); //store message in msg buffer
+	  HAL_UART_Transmit(&huart2, msg, msgSize, 10); //Send UART message to UART2
+	  HAL_Delay(100);
+  }
+  */
   control_run();
   while (1)
   {

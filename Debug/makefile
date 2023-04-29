@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := exoskeleton
+BUILD_ARTIFACT_NAME := exokeleton
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-exoskeleton.elf \
+exokeleton.elf \
 
 MAP_FILES += \
-exoskeleton.map \
+exokeleton.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-exoskeleton.list \
+exokeleton.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: exoskeleton.elf secondary-outputs
+main-build: exokeleton.elf secondary-outputs
 
 # Tool invocations
-exoskeleton.elf exoskeleton.map: $(OBJS) $(USER_OBJS) C:\Users\Chris\STM32CubeIDE\workspace_1.10.1\exoskeleton\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "exoskeleton.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Chris\STM32CubeIDE\workspace_1.10.1\exoskeleton\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="exoskeleton.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+exokeleton.elf exokeleton.map: $(OBJS) $(USER_OBJS) C:\Users\Marcus\Desktop\exo\exoskeleton\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "exokeleton.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Marcus\Desktop\exo\exoskeleton\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="exokeleton.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-exoskeleton.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "exoskeleton.list"
+exokeleton.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "exokeleton.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) default.size.stdout exoskeleton.elf exoskeleton.list exoskeleton.map
+	-$(RM) default.size.stdout exokeleton.elf exokeleton.list exokeleton.map
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
