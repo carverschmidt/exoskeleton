@@ -1,4 +1,4 @@
 ../Core/Src/control.c:19:6:control_init	4	static
-../Core/Src/control.c:24:6:control_run	200	static
-../Core/Src/control.c:177:6:balance	16	static
-../Core/Src/control.c:202:5:check_balanced	16	static
+../Core/Src/control.c:24:6:control_run	160	static
+../Core/Src/control.c:154:6:balance	16	static
+../Core/Src/control.c:179:5:check_balanced	16	static
